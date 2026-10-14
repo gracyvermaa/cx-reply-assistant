@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# secrets - never commit these
+.env
+.env.local
+
+# build output
+dist/
+build/
+
+# editor and OS files
+.DS_Store
+.vscode/
