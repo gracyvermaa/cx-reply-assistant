@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
 import ConversationView from "./components/ConversationView";
+import KnowledgeBase from "./components/KnowledgeBase";
 import "./App.css";
 
 export default function App() {
+  const [page, setPage] = useState("inbox"); // "inbox" or "kb"
   const [conversations, setConversations] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -32,40 +34,63 @@ export default function App() {
   return (
     <div className="app">
       <aside className="sidebar">
-        <h2>Conversations</h2>
-
-        {conversations.map((c) => (
+        <div className="page-tabs">
           <button
-            key={c.id}
-            className={c.id === selectedId ? "chat-item active" : "chat-item"}
-            onClick={() => setSelectedId(c.id)}
+            className={page === "inbox" ? "on" : ""}
+            onClick={() => setPage("inbox")}
           >
-            <strong>{c.customers.name}</strong>
-            <span>{c.brands.name}</span>
+            Inbox
           </button>
-        ))}
-
-        <div className="role-toggle">
-          <p>Acting as</p>
-          <div className="role-buttons">
-            <button
-              className={role === "customer" ? "on" : ""}
-              onClick={() => setRole("customer")}
-            >
-              Customer
-            </button>
-            <button
-              className={role === "agent" ? "on" : ""}
-              onClick={() => setRole("agent")}
-            >
-              Agent
-            </button>
-          </div>
+          <button
+            className={page === "kb" ? "on" : ""}
+            onClick={() => setPage("kb")}
+          >
+            Knowledge base
+          </button>
         </div>
+
+        {page === "inbox" && (
+          <>
+            <h2>Conversations</h2>
+
+            {conversations.map((c) => (
+              <button
+                key={c.id}
+                className={
+                  c.id === selectedId ? "chat-item active" : "chat-item"
+                }
+                onClick={() => setSelectedId(c.id)}
+              >
+                <strong>{c.customers.name}</strong>
+                <span>{c.brands.name}</span>
+              </button>
+            ))}
+
+            <div className="role-toggle">
+              <p>Acting as</p>
+              <div className="role-buttons">
+                <button
+                  className={role === "customer" ? "on" : ""}
+                  onClick={() => setRole("customer")}
+                >
+                  Customer
+                </button>
+                <button
+                  className={role === "agent" ? "on" : ""}
+                  onClick={() => setRole("agent")}
+                >
+                  Agent
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </aside>
 
       <main className="main">
-        {selectedId ? (
+        {page === "kb" ? (
+          <KnowledgeBase />
+        ) : selectedId ? (
           <ConversationView conversationId={selectedId} role={role} />
         ) : (
           <div className="empty">Loading conversations...</div>
