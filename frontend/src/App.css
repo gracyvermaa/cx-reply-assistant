@@ -190,3 +190,99 @@
   padding: 40px;
   color: #6b7280;
 }
+
+/* ---------- AI reply panel ---------- */
+.reply-panel {
+  margin: 0 20px 12px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.reply-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.primary {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.notice {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.notice.warn {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+
+.notice.error {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+.reply-panel textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font: inherit;
+  resize: vertical;
+}
+
+.reason {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.context {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.context summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.context ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.context li {
+  margin: 6px 0;
+  color: #374151;
+}
+
+.reply-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.muted {
+  font-size: 13px;
+  color: #6b7280;
+}

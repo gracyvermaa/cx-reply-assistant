@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import ReplyPanel from "./ReplyPanel";
 
 // get all messages of a conversation, oldest first
 async function fetchMessages(conversationId) {
@@ -131,6 +132,14 @@ export default function ConversationView({ conversationId, role }) {
         ))}
       </div>
 
+              {role === "agent" && latestCustomerMessage && (
+        <ReplyPanel
+          key={`${conversationId}-${latestCustomerMessage.id}`}
+          conversationId={conversationId}
+          onSent={async () => setMessages(await fetchMessages(conversationId))}
+        />
+      )}
+      
       <form className="send-box" onSubmit={sendMessage}>
         <input
           value={text}
