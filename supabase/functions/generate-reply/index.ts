@@ -126,6 +126,16 @@ async function askModel(model: string, systemPrompt: string, userPrompt: string)
 
 // try the main model first, then the backup model if there is one
 async function askGemini(systemPrompt: string, userPrompt: string) {
+    // test switch: skip the real AI so testing costs nothing
+  if (Deno.env.get("MOCK_AI") === "true") {
+    return {
+      reply:
+        "[Test mode] This is a placeholder reply. The real AI was not called.",
+      confidence: "high",
+      needs_human: false,
+      reason: "Test mode is on, so no AI request was made.",
+    };
+  }
   const models = [
     Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest",
     Deno.env.get("GEMINI_FALLBACK_MODEL"),
@@ -232,6 +242,23 @@ Deno.serve(async (req) => {
       });
     }
 
+        // 4b. daily cap on AI replies, so the free quota cannot be used up
+    const dailyLimit = Number(Deno.env.get("DAILY_AI_LIMIT") ?? "30");
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const { count } = await supabase
+      .from("ai_generations")
+      .select("id", { count: "exact", head: true })
+      .gte("created_at", since)
+      .not("ai_response", "is", null);
+
+    if ((count ?? 0) >= dailyLimit) {
+      return json({
+        error:
+          "The daily limit for AI replies has been reached. Please write a reply manually.",
+      }, 429);
+    }
+    
     // 5. work out the order facts ourselves (AI is bad at date maths)
     const order = conversation.orders;
     let orderFacts = "No order is linked to this conversation.";
