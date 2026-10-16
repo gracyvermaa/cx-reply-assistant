@@ -48,6 +48,11 @@ function keywords(text: string): Set<string> {
     .map((w) => w.slice(0, 4));
   return new Set(words);
 }
+// Related topics that should be retrieved together.
+const RELATED: Record<string, string[]> = {
+  refu: ["retu"],
+  retu: ["refu"],
+};
 
 // score each KB entry by how many of the customer's words it shares
 function findRelevantEntries(
@@ -55,6 +60,13 @@ function findRelevantEntries(
   entries: { title: string; content: string }[],
 ) {
   const wanted = keywords(message);
+
+  // A refund question should also retrieve the return policy.
+for (const w of [...wanted]) {
+  for (const related of RELATED[w] ?? []) {
+    wanted.add(related);
+  }
+}
 
   return entries
     .map((entry) => {
@@ -280,6 +292,7 @@ Follow these rules strictly:
 - Use ONLY the policy excerpts and order facts given below. Do not use outside knowledge.
 - Never promise a refund, replacement or exception unless the policy clearly allows it for this order.
 - If the policy conflicts with the customer's situation (for example the refund window has passed), do not promise anything. Explain the policy politely and say you will check what can be done.
+- Apply a policy rule only when the customer's facts satisfy its conditions. Do not apply a damaged-item reporting window unless the customer says the item is damaged. If a necessary fact is unknown, ask a clarifying question rather than assuming.
 - If the policies do not fully answer the question, say so, set needs_human to true and confidence to low.
 - Never invent prices, dates, time limits or links.
 - Keep the reply short, warm and written to the customer.
